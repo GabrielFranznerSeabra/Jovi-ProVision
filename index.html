@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JOVI ProVision — A câmera profissional que fala a sua língua</title>
+<meta name="description" content="JOVI ProVision: oito controles de câmera de nível profissional, explicados em linguagem simples enquanto você fotografa.">
+
+<!-- Fontes: DM Sans (interface) e DM Mono (valores numéricos e legendas técnicas) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- TailwindCSS via CDN: cuida do layout das seções, grid e responsividade -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- styles.css: mockup do celular, tokens de cor, camadas de filtro e animações -->
+<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="antialiased">
+
+<!-- =====================================================================
+     FILTRO SVG DE RUÍDO
+     Gera o granulado (grain) que a camada .cena__grao aplica sobre o visor.
+     ===================================================================== -->
+<svg width="0" height="0" class="svg-oculto" aria-hidden="true" focusable="false">
+  <filter id="ruido" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
+  </filter>
+</svg>
+
+
+<!-- =====================================================================
+     SEÇÃO 1 — HERO
+     ===================================================================== -->
+<header class="hero relative flex min-h-screen flex-col items-center justify-center px-6 text-center">
+  <p class="marca-topo mb-6">J O V I</p>
+
+  <h1 class="titulo-hero text-6xl sm:text-7xl lg:text-8xl">ProVision</h1>
+
+  <p class="mt-6 max-w-xl text-base leading-relaxed text-white/55 sm:text-lg">
+    A câmera profissional que fala a sua língua. Oito controles de nível pro,
+    explicados enquanto você fotografa.
+  </p>
+
+  <a href="#laboratorio" class="indicador-rolagem mt-16 flex flex-col items-center gap-3">
+    <span class="legenda-tec">ROLE PARA DESCOBRIR</span>
+    <span class="seta-rolagem" aria-hidden="true"></span>
+  </a>
+</header>
+
+
+<!-- =====================================================================
+     SEÇÃO 2 — O PROBLEMA
+     ===================================================================== -->
+<section class="mx-auto max-w-6xl px-6 py-24 sm:py-32">
+  <h2 class="titulo-secao max-w-2xl text-3xl sm:text-4xl lg:text-5xl">
+    O modo PRO existe.<br><span class="text-white/40">Quase ninguém usa.</span>
+  </h2>
+
+  <div class="mt-14 grid gap-6 md:grid-cols-3">
+    <article class="cartao">
+      <span class="cartao__num">01</span>
+      <h3 class="cartao__titulo">Siglas sem tradução</h3>
+      <p class="cartao__texto">
+        ISO, EV, WB. Termos que pressupõem um conhecimento que o usuário não tem
+        e que nenhuma tela se dá ao trabalho de explicar.
+      </p>
+    </article>
+
+    <article class="cartao">
+      <span class="cartao__num">02</span>
+      <h3 class="cartao__titulo">Sem retorno visual</h3>
+      <p class="cartao__texto">
+        O ajuste acontece às cegas. Não dá para saber o efeito antes de errar —
+        e o erro só aparece depois, na galeria.
+      </p>
+    </article>
+
+    <article class="cartao">
+      <span class="cartao__num">03</span>
+      <h3 class="cartao__titulo">Medo de estragar</h3>
+      <p class="cartao__texto">
+        Sem um caminho de volta claro, o usuário prefere não tocar em nada.
+        O modo profissional vira um botão que ninguém aperta.
+      </p>
+    </article>
+  </div>
+</section>
+
+
+<!-- =====================================================================
+     SEÇÃO 3 — O LABORATÓRIO (seção principal)
+     Painel-guia à esquerda + celular interativo à direita.
+     ===================================================================== -->
+<section id="laboratorio" class="mx-auto max-w-6xl px-6 py-20 sm:py-24">
+
+  <div class="grid items-center gap-14 lg:grid-cols-2 lg:gap-16">
+
+    <!-- ---------- Painel-guia: espelha o controle ativo no celular ---------- -->
+    <div id="guia" class="guia order-2 lg:order-1">
+      <p class="guia__etiqueta">
+        <span id="guiaNum" class="guia__num">01</span>
+        <span id="guiaCat" class="guia__cat">SENSIBILIDADE</span>
+      </p>
+
+      <h2 class="guia__nome mt-4 text-4xl sm:text-5xl">
+        <span id="guiaNome">Controle de Luz</span>
+        <span id="guiaTech" class="guia__tech">(ISO)</span>
+      </h2>
+
+      <p id="guiaTexto" class="guia__texto mt-6 max-w-lg">
+        Mais luz em ambientes escuros, sem menus crípticos. O slider mostra o efeito
+        e avisa quando a granulação começa a aparecer.
+      </p>
+
+      <p id="guiaFaixa" class="guia__faixa mt-8">ISO 100 – 3200</p>
+
+      <p class="mt-10 text-xs leading-relaxed text-white/30">
+        Toque em qualquer um dos quatro cards do celular para trocar o controle.
+        Este painel acompanha.
+      </p>
+    </div>
+
+    <!-- ---------- Celular interativo ---------- -->
+    <div class="order-1 flex flex-col items-center lg:order-2">
+
+      <div class="palco-celular">
+
+        <!-- ============ O CELULAR ============ -->
+        <div class="telefone" id="telefone" data-modo="auto" data-pagina="0" data-ctrl="">
+          <div class="telefone__tela">
+
+            <!-- ---- Camadas da cena (fundo) ---- -->
+            <div class="cena">
+              <div class="cena__img cena--fallback" id="cenaImg"></div>
+              <div class="cena__wb"      id="camadaWB"></div>
+              <div class="cena__grao"    id="camadaGrao"></div>
+              <div class="cena__nitidez" id="camadaNitidez"></div>
+              <div class="cena__agua"    id="camadaAgua"></div>
+              <div class="cena__foco"    id="camadaFoco" data-ponto="centro"></div>
+              <div class="cena__flash"   id="flash"></div>
+            </div>
+
+            <!-- ---- Interface sobre a cena ---- -->
+            <div class="ui">
+
+              <!-- Barra de status -->
+              <div class="barra-status">
+                <span class="barra-status__hora">20:41</span>
+                <span class="barra-status__furo" aria-hidden="true"></span>
+                <span class="barra-status__dir">
+                  <span class="sinal" aria-hidden="true">
+                    <i></i><i></i><i></i><i></i>
+                  </span>
+                  <span class="sinal__rede">5G</span>
+                  <span class="bateria" aria-hidden="true"><i></i></span>
+                </span>
+              </div>
+
+              <!-- Barra superior do visor.
+                   Flash, timer, 4:3 e grade são decorativos: marcados com data-inerte,
+                   que no CSS é o ÚNICO seletor a receber opacity .4. -->
+              <div class="barra-topo">
+                <span class="barra-topo__grupo">
+                  <span class="btn-circ" data-inerte title="Disponível no dispositivo físico" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13.5 2.5 5 13.5h5.5L9.5 21.5 19 10.5h-6l.5-8z"/></svg>
+                  </span>
+                  <span class="btn-circ" data-inerte title="Disponível no dispositivo físico" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+                  </span>
+                </span>
+
+                <button type="button" class="badge-modo" id="badgeModo">AUTO</button>
+
+                <span class="barra-topo__grupo">
+                  <span class="btn-circ btn-circ--texto" data-inerte title="Disponível no dispositivo físico">4:3</span>
+                  <span class="btn-circ" data-inerte title="Disponível no dispositivo físico" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M3.5 9h17M9 9v11.5"/></svg>
+                  </span>
+                </span>
+              </div>
+
+              <!-- Área livre do visor: centraliza a moldura de foco -->
+              <div class="visor" id="visor">
+                <div class="moldura-foco" id="molduraFoco" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i>
+                </div>
+              </div>
+
+              <!-- Cluster inferior -->
+              <div class="rodape-camera">
+
+                <!-- Linha de zoom -->
+                <div class="linha-zoom" id="linhaZoom">
+                  <div class="linha-zoom__pilulas">
+                    <button type="button" class="pilula-zoom" data-zoom="0.85">.5x</button>
+                    <button type="button" class="pilula-zoom esta-ativa" data-zoom="1">1&times;</button>
+                    <button type="button" class="pilula-zoom" data-zoom="1.6">2x</button>
+                    <button type="button" class="pilula-zoom" data-zoom="2.6">5x</button>
+                  </div>
+                  <div class="pontos" id="pontos">
+                    <button type="button" class="ponto esta-ativa" data-pagina="0" title="Controles básicos"><span class="sr-only">Controles básicos</span></button>
+                    <button type="button" class="ponto" data-pagina="1" title="Controles avançados"><span class="sr-only">Controles avançados</span></button>
+                  </div>
+                </div>
+
+                <!-- Painel do controle ativo (montado pelo script.js) -->
+                <div class="painel" id="painel" hidden></div>
+
+                <!-- Faixa com os 4 cards da página corrente (montada pelo script.js) -->
+                <div class="faixa-controles" id="faixaControles"></div>
+
+                <!-- Barra de modos.
+                     Noite/Retrato/Vídeo são inertes (cursor default + title), mas NÃO levam
+                     data-inerte: eles ficam apenas no cinza 30% dos prints, sem opacidade
+                     extra por cima — senão a soma dos dois efeitos os apagaria da tela. -->
+                <div class="barra-modos">
+                  <span class="modo" title="Disponível no dispositivo físico">Noite</span>
+                  <span class="modo" title="Disponível no dispositivo físico">Retrato</span>
+                  <span class="modo esta-ativa" id="modoFoto" title="Disponível no dispositivo físico">Foto</span>
+                  <span class="modo" title="Disponível no dispositivo físico">Vídeo</span>
+                  <button type="button" class="modo modo--pro" id="modoPro">PRO Vision</button>
+                </div>
+
+                <!-- Barra inferior -->
+                <div class="barra-inferior">
+                  <span class="galeria">
+                    <span class="galeria__miniatura" id="miniatura">
+                      <span class="galeria__img" id="miniaturaImg"></span>
+                      <span class="galeria__wb" id="miniaturaWB"></span>
+                    </span>
+                    <span class="galeria__contador" id="contador" hidden></span>
+                  </span>
+
+                  <button type="button" class="obturador" id="obturador" aria-label="Capturar foto">
+                    <span class="obturador__disco"></span>
+                  </button>
+
+                  <button type="button" class="btn-virar" id="btnVirar" aria-label="Virar câmera">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 8.5A8 8 0 0 0 5 7M4 15.5A8 8 0 0 0 19 17"/><path d="M4.5 3v4h4M19.5 21v-4h-4"/></svg>
+                  </button>
+                </div>
+
+                <p class="marca-jovi">JOVI</p>
+              </div>
+
+              <!-- Toasts da IA -->
+              <div class="toast toast--boas-vindas" id="toastBoasVindas" hidden>
+                <span class="toast__icone" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="m12 3.5 2.6 5.5 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.8l5.9-.8L12 3.5z"/></svg>
+                </span>
+                <span class="toast__corpo">
+                  <strong class="toast__titulo">Bem-vindo ao PRO Vision</strong>
+                  <span class="toast__texto">Ajuste as configurações com linguagem simples. A IA te guia em cada passo.</span>
+                </span>
+              </div>
+
+              <div class="toast toast--cena" id="toastCena" hidden>
+                <span class="toast__icone" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="m12 3.5 2.6 5.5 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.8l5.9-.8L12 3.5z"/></svg>
+                </span>
+                <span class="toast__corpo">
+                  <strong class="toast__titulo toast__titulo--ambar">Cenário: Paisagem</strong>
+                  <span class="toast__texto">Ambiente com muita luz detectada. Ajustamos ISO, contraste e cores para realçar os detalhes naturais.</span>
+                </span>
+              </div>
+
+            </div><!-- /.ui -->
+          </div><!-- /.telefone__tela -->
+        </div><!-- /.telefone -->
+
+      </div><!-- /.palco-celular -->
+
+      <!-- ---------- Presets de cena + ver original ---------- -->
+      <div class="mt-10 w-full max-w-sm">
+        <p class="legenda-tec mb-3 text-center">PRESETS DA IA</p>
+        <div class="flex flex-wrap justify-center gap-2">
+          <button type="button" class="btn-preset" data-preset="retrato">Retrato</button>
+          <button type="button" class="btn-preset" data-preset="paisagem">Paisagem</button>
+          <button type="button" class="btn-preset" data-preset="noturno">Noturno</button>
+          <button type="button" class="btn-preset" data-preset="original">Original</button>
+        </div>
+        <div class="mt-3 flex justify-center">
+          <button type="button" class="btn-original" id="btnVerOriginal">
+            Ver original <span class="text-white/30">(segure)</span>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /coluna do celular -->
+  </div>
+</section>
+
+
+<!-- =====================================================================
+     SEÇÃO 4 — OS 8 CONTROLES (grade montada pelo script.js)
+     ===================================================================== -->
+<section class="mx-auto max-w-6xl px-6 py-24 sm:py-28">
+  <h2 class="titulo-secao text-3xl sm:text-4xl lg:text-5xl">Os oito controles</h2>
+  <p class="mt-4 max-w-xl text-white/45">
+    Cada um com nome em português, uma explicação curta e a sigla técnica no lugar certo:
+    ao lado, não no lugar do nome. Clique em qualquer card para experimentar no celular.
+  </p>
+
+  <div id="grade8" class="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4"></div>
+</section>
+
+
+<!-- =====================================================================
+     SEÇÃO 5 — FECHAMENTO
+     ===================================================================== -->
+<section class="fechamento px-6 py-28 text-center sm:py-36">
+  <h2 class="titulo-secao mx-auto max-w-3xl text-3xl sm:text-4xl lg:text-5xl">
+    Controle profissional.<br><span class="text-dourado">Experiência simples.</span>
+  </h2>
+
+  <p class="mx-auto mt-6 max-w-xl text-white/50">
+    O PRO Vision não esconde a complexidade — ele traduz. As oito ferramentas continuam
+    todas lá, com os nomes que o usuário entende e o resultado visível antes do clique.
+  </p>
+
+  <p class="selo mx-auto mt-10">Carregado em 0.4s · 100% web · sem instalação</p>
+
+  <footer class="mt-20 border-t border-white/5 pt-10">
+    <p class="text-sm text-white/40">JOVI ProVision · FIAP Challenge 2025</p>
+    <p class="legenda-tec mt-3">[NOME] — RM [000000]</p>
+  </footer>
+</section>
+
+<script src="js/script.js"></script>
+</body>
+</html>
