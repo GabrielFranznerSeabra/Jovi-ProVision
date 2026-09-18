@@ -96,10 +96,12 @@
      ===================================================================== -->
 <section id="laboratorio" class="mx-auto max-w-6xl px-6 py-20 sm:py-24">
 
-  <div class="grid items-center gap-14 lg:grid-cols-2 lg:gap-16">
+  <!-- Coluna do texto flexível e coluna do celular do tamanho do conteúdo:
+       o texto começa na mesma margem dos títulos das Seções 2 e 4. -->
+  <div class="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-12">
 
     <!-- ---------- Painel-guia: espelha o controle ativo no celular ---------- -->
-    <div id="guia" class="guia order-2 lg:order-1">
+    <div id="guia" class="guia order-2 justify-self-start lg:order-1">
       <p class="guia__etiqueta">
         <span id="guiaNum" class="guia__num">01</span>
         <span id="guiaCat" class="guia__cat">SENSIBILIDADE</span>
@@ -123,8 +125,13 @@
       </p>
     </div>
 
-    <!-- ---------- Celular interativo ---------- -->
-    <div class="order-1 flex flex-col items-center lg:order-2">
+    <!-- ---------- Celular interativo + dica de navegação ----------
+         No desktop: celular e dica lado a lado, conjunto centralizado.
+         Abaixo de lg: a dica desce para baixo do celular, numa linha só. -->
+    <div class="lab-celular order-1 flex flex-col items-center lg:order-2 lg:flex-row lg:items-start lg:justify-center" id="labCelular">
+
+      <!-- Celular com o "Ver original" centralizado logo abaixo dele -->
+      <div class="flex flex-col items-center">
 
       <div class="palco-celular">
 
@@ -200,9 +207,10 @@
                     <button type="button" class="pilula-zoom" data-zoom="1.6">2x</button>
                     <button type="button" class="pilula-zoom" data-zoom="2.6">5x</button>
                   </div>
-                  <div class="pontos" id="pontos">
-                    <button type="button" class="ponto esta-ativa" data-pagina="0" title="Controles básicos"><span class="sr-only">Controles básicos</span></button>
-                    <button type="button" class="ponto" data-pagina="1" title="Controles avançados"><span class="sr-only">Controles avançados</span></button>
+                  <!-- Pulsam (classe .pulsando) até a primeira troca de página -->
+                  <div class="pontos pulsando" id="pontos">
+                    <button type="button" class="ponto esta-ativa" data-pagina="0" title="Trocar página de controles"><span class="sr-only">Controles básicos</span></button>
+                    <button type="button" class="ponto" data-pagina="1" title="Trocar página de controles"><span class="sr-only">Controles avançados</span></button>
                   </div>
                 </div>
 
@@ -273,21 +281,23 @@
 
       </div><!-- /.palco-celular -->
 
-      <!-- ---------- Presets de cena + ver original ---------- -->
-      <div class="mt-10 w-full max-w-sm">
-        <p class="legenda-tec mb-3 text-center">PRESETS DA IA</p>
-        <div class="flex flex-wrap justify-center gap-2">
-          <button type="button" class="btn-preset" data-preset="retrato">Retrato</button>
-          <button type="button" class="btn-preset" data-preset="paisagem">Paisagem</button>
-          <button type="button" class="btn-preset" data-preset="noturno">Noturno</button>
-          <button type="button" class="btn-preset" data-preset="original">Original</button>
-        </div>
-        <div class="mt-3 flex justify-center">
-          <button type="button" class="btn-original" id="btnVerOriginal">
-            Ver original <span class="text-white/30">(segure)</span>
-          </button>
-        </div>
+      <!-- Ver original: a prova visual — segurar mostra a foto sem nenhum ajuste -->
+      <button type="button" class="btn-original mt-6" id="btnVerOriginal">
+        Ver original <span class="text-white/30">(segure)</span>
+      </button>
+
       </div>
+
+      <!-- Dica de navegação: aponta para os dois pontinhos ao lado do zoom.
+           O script alinha a seta à altura real dos pontinhos (--dica-y). -->
+      <aside class="dica-pontos" id="dicaPontos">
+        <span class="dica-pontos__seta" aria-hidden="true"></span>
+        <p class="dica-pontos__titulo">Mais quatro controles</p>
+        <p class="dica-pontos__texto">
+          Toque nos dois pontinhos ao lado do zoom — ou arraste a faixa de controles
+          para o lado — e acesse Velocidade, Nitidez, Saturação e Redução de Ruído.
+        </p>
+      </aside>
 
     </div><!-- /coluna do celular -->
   </div>
@@ -321,11 +331,8 @@
     todas lá, com os nomes que o usuário entende e o resultado visível antes do clique.
   </p>
 
-  <p class="selo mx-auto mt-10">Carregado em 0.4s · 100% web · sem instalação</p>
-
-  <footer class="mt-20 border-t border-white/5 pt-10">
-    <p class="text-sm text-white/40">JOVI ProVision · FIAP Challenge 2025</p>
-    <p class="legenda-tec mt-3">[NOME] — RM [000000]</p>
+  <footer class="mt-16 border-t border-white/5 pt-10">
+    <p class="text-sm text-white/40">JOVI ProVision · FIAP Challenge 2026</p>
   </footer>
 </section>
 
