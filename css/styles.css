@@ -13,9 +13,19 @@
    1. TOKENS
    ========================================================================== */
 :root {
-  --bg:      #0a0d16;   /* fundo das seções   */
+  --bg:      #0a0d16;   /* fundo base: hero, Seção 2 e fechamento */
+  --bg-lab:  #0c0f1a;   /* Seção 3: um degrau mais claro, destaca o palco */
+  --bg-ctrl: #090c14;   /* Seção 4: um degrau mais escuro */
   --panel:   #12151f;   /* painéis do celular */
   --ambar:   #F5C842;   /* cor da marca       */
+
+  /* Tinta: cinzas levemente quentes. Cinza puro sobre o azul-escuro do fundo
+     fica morto e briga com o âmbar — a diferença é sutil em cada elemento e
+     bem perceptível no conjunto. Vale para as seções, não para o celular. */
+  --ink-1: #ffffff;                    /* títulos                  */
+  --ink-2: rgba(245,240,232,.62);      /* corpo de texto           */
+  --ink-3: rgba(240,235,225,.38);      /* rótulos, legendas        */
+  --ink-4: rgba(235,230,222,.20);      /* elementos muito discretos */
 
   --c-iso:   #F5C842;   /* Ctrl Luz   */
   --c-ev:    #7EC8E3;   /* Clareza    */
@@ -38,10 +48,14 @@
    correto mesmo se o CDN do Tailwind não carregar. */
 *, *::before, *::after { box-sizing: border-box; }
 
+/* overflow-x: clip recorta o sangramento das faixas de fundo (que usam 100vw)
+   sem criar área rolável; o hidden do body fica como reserva. */
+html { overflow-x: clip; }
+
 body {
   margin: 0;
   background: var(--bg);
-  color: #fff;
+  color: var(--ink-1);
   font-family: var(--fonte);
   overflow-x: hidden;              /* nenhuma rolagem horizontal em qualquer largura */
   -webkit-font-smoothing: antialiased;
@@ -61,15 +75,104 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* O SVG que carrega o filtro de ruído não deve ocupar espaço */
 .svg-oculto { position: absolute; width: 0; height: 0; overflow: hidden; }
 
+/* ---------- Escala tipográfica ----------
+   A monoespaçada é reservada para dado técnico: faixas de valores, numeração,
+   siglas entre parênteses e a linha do rodapé. Nunca em texto corrido.
+   Espaçamento óptico: −.03em acima de 2.5rem, −.02em entre 1.5 e 2.5rem,
+   0 no corpo e .14em nos rótulos pequenos em maiúsculas. */
 .legenda-tec {
   font-family: var(--fonte-mono);
-  font-size: .68rem;
-  letter-spacing: .22em;
-  color: rgba(255,255,255,.35);
+  font-size: .7rem;
+  line-height: 1.3;
+  letter-spacing: .14em;
+  color: var(--ink-3);
 }
 
-.titulo-secao { font-weight: 700; letter-spacing: -.02em; line-height: 1.12; }
+.titulo-secao {
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+}
+/* Segunda linha dos títulos de duas linhas: o eco apagado da primeira */
+.titulo-eco   { color: var(--ink-3); }
 .text-dourado { color: var(--ambar); }
+
+/* Todo parágrafo corrido: medida de leitura curta e ritmo constante */
+.texto-corrido {
+  max-width: 58ch;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  letter-spacing: 0;
+  color: var(--ink-2);
+}
+
+/* Nota de apoio: menor que o corpo, no cinza dos rótulos */
+.nota {
+  max-width: 58ch;
+  font-size: .8rem;
+  line-height: 1.65;
+  color: var(--ink-3);
+}
+
+/* Linha única do rodapé, em monoespaçada como dado técnico */
+.rodape-linha {
+  font-family: var(--fonte-mono);
+  font-size: .75rem;
+  line-height: 1.3;
+  letter-spacing: .06em;
+  color: var(--ink-3);
+}
+
+/* ---------- Faixas de fundo das seções ----------
+   Cada seção pinta a largura toda e, nos últimos 120px, funde na cor da seção
+   seguinte. Como cada faixa já chega na cor da vizinha, a emenda some sem
+   precisar de um segundo gradiente do outro lado. */
+.secao { position: relative; }
+.secao::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -50vw;
+  width: 100vw;
+  z-index: -1;                     /* atrás do conteúdo, à frente do fundo do body */
+  background:
+    var(--faixa-aura, none),
+    linear-gradient(180deg, var(--faixa) calc(100% - 120px), var(--faixa-prox) 100%);
+  pointer-events: none;
+}
+.secao--problema   { --faixa: var(--bg);      --faixa-prox: var(--bg-lab);  }
+
+/* A aura do hero é cortada na borda de baixo dele, o que deixava um risco
+   horizontal atravessando a página. Esta camada é a continuação exata dela —
+   mesmos raios e mesmas opacidades, com os centros deslocados para o topo
+   desta seção (o hero tem 100vh, então 104% da altura dele cai 4vh daqui).
+   A máscara dissolve o brilho antes que ele encha a seção de névoa. */
+.secao--problema::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -50vw;
+  width: 100vw;
+  height: 56vh;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(78vw 52vh at 50% 4vh, rgba(245,200,66,.18), transparent 68%),
+    radial-gradient(60vw 40vh at 50% 0,   rgba(245,200,66,.10), transparent 70%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0 30%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0 30%, transparent 100%);
+}
+.secao--lab        { --faixa: var(--bg-lab);  --faixa-prox: var(--bg-ctrl); }
+.secao--controles  { --faixa: var(--bg-ctrl); --faixa-prox: var(--bg);      }
+.secao--fechamento {
+  --faixa: var(--bg);
+  --faixa-prox: var(--bg);
+  --faixa-aura: radial-gradient(64% 46% at 50% 0%, rgba(245,200,66,.10), transparent 70%);
+}
 
 /* ==========================================================================
    3. SEÇÃO 1 — HERO
@@ -80,11 +183,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
     radial-gradient(60% 40% at 50% 100%, rgba(245,200,66,.10), transparent 70%);
 }
 
+/* O text-indent compensa o vão que o letter-spacing deixa depois da última
+   letra — sem ele a palavra centralizada parece deslocada para a esquerda. */
 .marca-topo {
   font-size: .72rem;
   font-weight: 500;
-  letter-spacing: .42em;
-  color: rgba(255,255,255,.35);
+  line-height: 1.3;
+  letter-spacing: .5em;
+  text-indent: .5em;
+  color: var(--ink-3);
 }
 
 .titulo-hero {
@@ -102,8 +209,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .seta-rolagem {
   width: 9px;
   height: 9px;
-  border-right: 1.5px solid rgba(255,255,255,.4);
-  border-bottom: 1.5px solid rgba(255,255,255,.4);
+  border-right: 1.5px solid var(--ink-3);
+  border-bottom: 1.5px solid var(--ink-3);
   transform: rotate(45deg);
   animation: descer 2.2s ease-in-out infinite;
 }
@@ -111,29 +218,44 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* ==========================================================================
    4. SEÇÃO 2 — CARDS DO PROBLEMA
    ========================================================================== */
+/* O inset na aresta de cima simula a luz vindo de cima: é o detalhe que separa
+   um card com corpo de um retângulo cinza chapado. */
 .cartao {
-  background: rgba(255,255,255,.03);
+  background: linear-gradient(180deg, rgba(255,255,255,.035) 0%, rgba(255,255,255,.012) 100%);
   border: 1px solid rgba(255,255,255,.07);
-  border-radius: 16px;
+  border-radius: 14px;
   padding: 28px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 1px 2px rgba(0,0,0,.4);
+  transition: border-color .24s ease-out;
 }
+/* Não são clicáveis: a borda clareia, mas o card não se mexe */
+.cartao:hover { border-color: rgba(255,255,255,.14); }
+
 .cartao__num {
   font-family: var(--fonte-mono);
-  font-size: .7rem;
-  letter-spacing: .2em;
-  color: rgba(245,200,66,.55);
+  font-size: .875rem;
+  line-height: 1.3;
+  letter-spacing: .14em;
+  color: rgba(245,200,66,.7);
 }
-.cartao__titulo { margin-top: 14px; font-size: 1.15rem; font-weight: 700; }
-.cartao__texto  { margin-top: 10px; font-size: .93rem; line-height: 1.65; color: rgba(255,255,255,.45); }
+.cartao__titulo { margin-top: 8px; font-size: 1.15rem; font-weight: 700; line-height: 1.3; }
+.cartao__texto  { margin-top: 10px; max-width: 58ch; font-size: 1rem; line-height: 1.65; color: var(--ink-2); }
 
 /* ==========================================================================
    5. SEÇÃO 3 — PAINEL-GUIA, PALCO, VER ORIGINAL E DICA
    ========================================================================== */
 .guia { --cor: var(--ambar); }
 
-.guia__num  { font-family: var(--fonte-mono); font-size: .8rem; color: var(--cor); transition: color .3s; }
-.guia__cat  { font-family: var(--fonte-mono); font-size: .68rem; letter-spacing: .22em; color: rgba(255,255,255,.35); margin-left: 12px; }
-.guia__nome { font-weight: 700; letter-spacing: -.025em; line-height: 1.05; }
+.guia__num  { font-family: var(--fonte-mono); font-size: .875rem; line-height: 1.3; color: var(--cor); transition: color .3s; }
+.guia__cat  { font-family: var(--fonte-mono); font-size: .7rem; line-height: 1.3; letter-spacing: .14em; color: var(--ink-3); margin-left: 12px; }
+.guia__nome {
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+}
 
 .guia__tech {
   font-family: var(--fonte-mono);
@@ -145,14 +267,21 @@ button { font: inherit; color: inherit; cursor: pointer; }
   transition: color .3s;
 }
 
-.guia__texto { color: rgba(255,255,255,.55); line-height: 1.75; }
+.guia__texto {
+  max-width: 58ch;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
 
+/* A barra e o texto já seguem --cor, que o script troca junto com o controle */
 .guia__faixa {
   font-family: var(--fonte-mono);
   font-size: .8rem;
+  line-height: 1.3;
   color: var(--cor);
-  border-left: 2px solid var(--cor);
-  padding-left: 12px;
+  border-left: 3px solid var(--cor);
+  padding-left: 14px;
   transition: color .3s, border-color .3s;
 }
 
@@ -171,16 +300,17 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .btn-original {
   position: relative;              /* fica acima do glow do palco */
   border: 1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.03);
+  background: linear-gradient(180deg, rgba(255,255,255,.035) 0%, rgba(255,255,255,.012) 100%);
   border-radius: 999px;
   padding: 7px 16px;
   font-size: .8rem;
-  color: rgba(255,255,255,.7);
+  color: var(--ink-2);
   user-select: none;
   -webkit-user-select: none;
-  transition: border-color .2s, color .2s, background .2s;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  transition: border-color .24s ease-out, color .24s ease-out, background .24s ease-out;
 }
-.btn-original:hover { border-color: rgba(245,200,66,.5); color: #fff; }
+.btn-original:hover { border-color: rgba(245,200,66,.5); color: var(--ink-1); }
 .btn-original.esta-ativa { border-color: var(--ambar); color: var(--ambar); }
 
 /* ---------- Dica de navegação ao lado do celular ----------
@@ -196,7 +326,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .dica-pontos__texto {
   font-size: .75rem;
   line-height: 1.6;
-  color: rgba(255,255,255,.38);
+  color: var(--ink-3);
 }
 
 @media (min-width: 1024px) {
@@ -221,7 +351,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
     font-size: .8rem;
     line-height: 1.2rem;
     font-weight: 500;
-    color: rgba(255,255,255,.62);
+    color: var(--ink-2);
   }
   .dica-pontos__texto { margin-top: 6px; font-size: .74rem; }
 
@@ -252,35 +382,66 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* ==========================================================================
    6. SEÇÃO 4 — CARDS DOS 8 CONTROLES
    ========================================================================== */
+/* Cada card carrega a cor do seu controle em quatro lugares — borda superior,
+   ícone, fundo e sigla — em doses pequenas. O conjunto vira uma grade onde as
+   oito cores conversam sem que nenhum card grite.
+   O ícone fica acima da linha de categoria, com folga suficiente para os dois
+   não se tocarem. Tentar colocá-los lado a lado quebra "TEMPERATURA DE COR"
+   em duas linhas e desalinha o título daquele card em relação aos vizinhos. */
 .card-8 {
   --cor: var(--ambar);
   text-align: left;
   border: 1px solid rgba(255,255,255,.07);
-  background: rgba(255,255,255,.03);
+  border-top: 2px solid color-mix(in srgb, var(--cor) 50%, transparent);
   border-radius: 14px;
-  padding: 22px;
-  transition: border-color .2s, transform .2s, background .2s;
+  padding: 20px 22px 22px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--cor) 4%, transparent) 0%, transparent 62%),
+    linear-gradient(180deg, rgba(255,255,255,.035) 0%, rgba(255,255,255,.012) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 1px 2px rgba(0,0,0,.4);
+  transition: border-color .24s ease-out, transform .24s ease-out, box-shadow .24s ease-out;
 }
-.card-8:hover { border-color: var(--cor); transform: translateY(-3px); background: rgba(255,255,255,.05); }
+@media (hover: hover) {
+  .card-8:hover {
+    border-color: rgba(255,255,255,.12);
+    border-top-color: var(--cor);
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.09),
+      0 10px 24px -12px rgba(0,0,0,.65);
+  }
+  .card-8:hover .card-8__icone {
+    filter: drop-shadow(0 0 16px color-mix(in srgb, var(--cor) 45%, transparent));
+  }
+}
+
 .card-8__icone,
 .card-8__num,
 .card-8__nome,
 .card-8__texto,
 .card-8__faixa { display: block; }
-.card-8__icone { color: var(--cor); }
-.card-8__icone svg { width: 22px; height: 22px; }
-.card-8__num   { font-family: var(--fonte-mono); font-size: .65rem; letter-spacing: .18em; color: rgba(255,255,255,.3); }
-.card-8__nome  { margin-top: 10px; font-size: 1rem; font-weight: 700; }
-.card-8__tech  { font-family: var(--fonte-mono); font-size: .72rem; color: var(--cor); margin-left: .35em; }
-.card-8__texto { margin-top: 8px; font-size: .84rem; line-height: 1.6; color: rgba(255,255,255,.45); }
-.card-8__faixa { margin-top: 14px; font-family: var(--fonte-mono); font-size: .7rem; color: rgba(255,255,255,.32); }
+
+.card-8__icone {
+  margin-bottom: 16px;             /* o respiro que tirava a tensão com a categoria */
+  color: var(--cor);
+  filter: drop-shadow(0 0 12px color-mix(in srgb, var(--cor) 25%, transparent));
+  transition: filter .24s ease-out;
+}
+.card-8__icone svg { display: block; width: 22px; height: 22px; }
+
+.card-8__num   { font-family: var(--fonte-mono); font-size: .7rem; line-height: 1.3; letter-spacing: .14em; color: var(--ink-3); }
+.card-8__nome  { margin-top: 10px; font-size: 1rem; font-weight: 700; line-height: 1.3; }
+.card-8__tech  { font-family: var(--fonte-mono); font-size: .76rem; color: var(--cor); margin-left: .35em; }
+.card-8__texto { margin-top: 8px; max-width: 58ch; font-size: .9375rem; line-height: 1.65; color: var(--ink-2); }
+.card-8__faixa { margin-top: 14px; font-family: var(--fonte-mono); font-size: .72rem; line-height: 1.3; color: var(--ink-3); }
 
 /* ==========================================================================
    7. SEÇÃO 5 — FECHAMENTO
    ========================================================================== */
-.fechamento {
-  background: radial-gradient(64% 46% at 50% 0%, rgba(245,200,66,.10), transparent 70%);
-}
+/* A aura dourada do fechamento vive na faixa (.secao--fechamento), junto com
+   o fundo da seção, para não haver dois gradientes âmbar empilhados. */
 
 /* ==========================================================================
    8. O CELULAR — MOLDURA
@@ -1034,6 +1195,27 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 /* ==========================================================================
+   10.1 RESPOSTA AO MOUSE DENTRO DO CELULAR
+   Só estados :hover, em @media (hover: hover): o desenho em repouso do
+   aparelho continua idêntico aos prints, mas ele deixa de parecer estático.
+   ========================================================================== */
+@media (hover: hover) {
+  .pilula-zoom:not(.esta-ativa):hover {
+    border-color: rgba(255,255,255,.34);
+    color: rgba(255,255,255,.92);
+  }
+  .card-controle:not(.esta-ativa):hover {
+    border-color: color-mix(in srgb, var(--cor) 45%, transparent);
+    color: rgba(255,255,255,.55);
+  }
+  .ponto:not(.esta-ativa):hover { background: rgba(255,255,255,.55); }
+  .btn-virar:hover { background: rgba(255,255,255,.16); color: #fff; }
+  .badge-modo:hover { border-color: rgba(255,255,255,.4); }
+  .telefone[data-modo="auto"] .modo--pro:hover { color: rgba(255,255,255,.7); }
+  .painel__redefinir:hover { color: rgba(255,255,255,.7); }
+}
+
+/* ==========================================================================
    11. ANIMAÇÕES
    ========================================================================== */
 @keyframes clarao {
@@ -1069,4 +1251,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   }
   /* Sem pulsação nenhuma (a regra acima só a encurtaria para um piscar) */
   .pontos.pulsando .ponto { animation: none; }
+
+  /* Hover sem deslocamento: a cor responde, o card não se move */
+  .card-8:hover { transform: none; }
 }
